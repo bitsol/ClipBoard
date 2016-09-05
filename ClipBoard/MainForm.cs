@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -10,7 +11,7 @@ namespace ClipBoard
     public partial class MainForm : Form
     {
         public ListView list;
-        private static string contentFileName = "../../content.csv";
+        private static string contentFileName = "ClipBoard_data/content.csv";
         private List<string> savedItems;
         private List<string> recentItems;
         public MainForm()
@@ -19,6 +20,13 @@ namespace ClipBoard
             list = this.listView;
             savedItems = new List<string>(10);
             recentItems = new List<string>(10);
+            string keyName = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+            string valueName = "ClipBoard";
+            if (Registry.GetValue(keyName, valueName, null) != null)
+            {
+                checkStartup.Checked = true;
+            }
+           
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -45,7 +53,7 @@ namespace ClipBoard
                 ListViewItem lvi = 
                     new ListViewItem(new string[] { (i++).ToString(), s });
                 list.Items.Add(lvi);
-                list.Groups[1].Items.Add(lvi);
+                list.Groups[0].Items.Add(lvi);
             }
 
             //frequently write to csv
@@ -92,6 +100,11 @@ namespace ClipBoard
 
         private void loadContent(string contentFileName)
         {
+            Directory.CreateDirectory("ClipBoard_data");
+            if (!File.Exists("ClipBoard_data/content.csv"))
+            {
+                File.Create("ClipBoard_data/content.csv");
+            }
             string[] lines = File.ReadAllLines(contentFileName);
             foreach (string s in lines)
             {
@@ -106,17 +119,16 @@ namespace ClipBoard
             }
         }
 
-        public async void keyPressedHandler(Keys keys)
+        public void keyPressedHandler(Keys keys)
         {
             //control-c pressed
             if ((ModifierKeys & Keys.Control) == Keys.Control && keys == Keys.C)
             {
-                await Task.Delay(3000);
                 string content = Clipboard.GetText();
                 if (content.Length != 0)
                 {
-                    //accept content only of not empty and not too big
-                    if (recentItems.Count != 0 && content.Length < 10000)
+                    //accept content only if not empty and not too big
+                    if (content.Length < 10000)
                     {
                         recentItems.Insert(0, content); //add to top
 
@@ -128,12 +140,13 @@ namespace ClipBoard
                         updateList();
                     }
                 }
+
             }
 
             //control-` pressed
             if ((ModifierKeys & Keys.Control) == Keys.Control && keys == Keys.Oemtilde)
             {
-                notifyIcon.Visible = false;
+      
                 this.Show();
                 this.WindowState = FormWindowState.Normal;
 
@@ -213,32 +226,32 @@ namespace ClipBoard
             updateList();
         }
 
-        private void MainForm_Resize(object sender, EventArgs e)
+        private void checkStartup_CheckedChanged(object sender, EventArgs e)
         {
-            if (FormWindowState.Minimized == this.WindowState)
+            if (checkStartup.Checked)
             {
-                notifyIcon.Visible = true;
-                this.Hide();
-            }
-            else if (FormWindowState.Normal == this.WindowState)
+                var path = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+                RegistryKey key = Registry.CurrentUser.OpenSubKey(path, true);
+                key.SetValue("ClipBoard", Application.ExecutablePath.ToString());
+            }else
             {
-                notifyIcon.Visible = false;
+                var path = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+                RegistryKey key = Registry.CurrentUser.OpenSubKey(path, true);
+                key.DeleteValue("Clipboard", false);
             }
         }
 
-        private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
+        private void checkPortable_CheckedChanged(object sender, EventArgs e)
         {
-            notifyIcon.Visible = false;
-            this.WindowState = FormWindowState.Normal;
-            this.Show();
+            if (checkPortable.Checked)
+            {
+                checkStartup.Checked = false;
+                checkStartup.Enabled = false;
+            }
+            else
+            {
+                checkStartup.Enabled = true;
+            }
         }
-
-        private void notifyIcon_Click(object sender, EventArgs e)
-        {
-            notifyIcon.Visible = false;
-            this.WindowState = FormWindowState.Normal;
-            this.Show();
-        }
-
     }
 }

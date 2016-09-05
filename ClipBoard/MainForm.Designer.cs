@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Saved", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Recent", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("Saved", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Recent", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.listView = new System.Windows.Forms.ListView();
             this.indexColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -40,6 +40,8 @@
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.checkStartup = new System.Windows.Forms.CheckBox();
+            this.checkPortable = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,17 +56,17 @@
             this.listView.ForeColor = System.Drawing.Color.Green;
             this.listView.FullRowSelect = true;
             this.listView.GridLines = true;
-            listViewGroup5.Header = "Saved";
-            listViewGroup5.Name = "savedListViewGroup";
-            listViewGroup6.Header = "Recent";
-            listViewGroup6.Name = "recentListViewGroup";
+            listViewGroup7.Header = "Saved";
+            listViewGroup7.Name = "savedListViewGroup";
+            listViewGroup8.Header = "Recent";
+            listViewGroup8.Name = "recentListViewGroup";
             this.listView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup5,
-            listViewGroup6});
+            listViewGroup7,
+            listViewGroup8});
             this.listView.Location = new System.Drawing.Point(12, 12);
             this.listView.MultiSelect = false;
             this.listView.Name = "listView";
-            this.listView.Size = new System.Drawing.Size(260, 775);
+            this.listView.Size = new System.Drawing.Size(340, 514);
             this.listView.TabIndex = 0;
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
@@ -108,22 +110,46 @@
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "ClipBoard Manager";
             this.notifyIcon.Visible = true;
-            this.notifyIcon.Click += new System.EventHandler(this.notifyIcon_Click);
-            this.notifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseClick);
+            // 
+            // checkStartup
+            // 
+            this.checkStartup.AutoSize = true;
+            this.checkStartup.Location = new System.Drawing.Point(12, 552);
+            this.checkStartup.Name = "checkStartup";
+            this.checkStartup.Size = new System.Drawing.Size(149, 17);
+            this.checkStartup.TabIndex = 1;
+            this.checkStartup.Text = "Start ClipBoard on startup.";
+            this.checkStartup.UseVisualStyleBackColor = true;
+            this.checkStartup.CheckedChanged += new System.EventHandler(this.checkStartup_CheckedChanged);
+            // 
+            // checkPortable
+            // 
+            this.checkPortable.AutoSize = true;
+            this.checkPortable.Location = new System.Drawing.Point(12, 529);
+            this.checkPortable.Name = "checkPortable";
+            this.checkPortable.Size = new System.Drawing.Size(132, 17);
+            this.checkPortable.TabIndex = 2;
+            this.checkPortable.Text = "Run in Portable Mode.";
+            this.checkPortable.UseVisualStyleBackColor = true;
+            this.checkPortable.CheckedChanged += new System.EventHandler(this.checkPortable_CheckedChanged);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 799);
+            this.ClientSize = new System.Drawing.Size(364, 581);
+            this.Controls.Add(this.checkPortable);
+            this.Controls.Add(this.checkStartup);
             this.Controls.Add(this.listView);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.Text = "ClipBoard Manager";
+            this.Text = "ClipBoard - A Windows Clipboard Manager";
+            this.TopMost = true;
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.SizeChanged += new System.EventHandler(this.MainForm_SizeChanged);
-            this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -137,8 +163,8 @@
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
         private System.Windows.Forms.NotifyIcon notifyIcon;
-
-
+        private System.Windows.Forms.CheckBox checkStartup;
+        private System.Windows.Forms.CheckBox checkPortable;
     }
 }
 
